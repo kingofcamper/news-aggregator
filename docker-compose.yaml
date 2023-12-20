@@ -1,0 +1,62 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: dockerfile
+
+    environment:
+      DB_HOST: db
+      DB_DATABASE: newsaggregator_db
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      NEWSAPI_KEY: f56b15cc0f744100859702c5de7c17e4
+      NEWSAPI_SECRET:
+      NEWSAPI_URL: https://newsapi.org/v2/
+      THEGUARDIAN_KEY: 274a9270-c800-4eff-9c5a-f6d31425d53d
+      THEGUARDIAN_SECRET:
+      THEGUARDIAN_URL: https://content.guardianapis.com/
+      NYT_KEY: HrfVla55DJFHUgPcyAGliQGbGtjRBxfR
+      NYT_SECRET: O8tHk4vIZs8P8FRa
+      NYT_URL: https://api.nytimes.com/svc/search/v2/
+
+    ports:
+      - 8000:8000
+    volumes:
+      - ./backend:/app/backend
+    depends_on:
+      - db
+
+    networks:
+      - app
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: dockerfile
+    tty: true
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend:/app/frontend
+    depends_on:
+      - backend
+    networks:
+      - app
+
+  db:
+    image: mysql:5.7.40
+    environment:
+      MYSQL_DATABASE: "newsaggregator_db"
+      MYSQL_USER: "root"
+      MYSQL_PASSWORD: "root"
+      MYSQL_ROOT_PASSWORD: "root"
+    volumes:
+      - .dbdata:/var/lib/mysql/
+    networks:
+      - app
+
+networks:
+  app:
+    driver: bridge
