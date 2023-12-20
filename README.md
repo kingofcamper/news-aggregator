@@ -1,28 +1,24 @@
 # Getting started
 
-## Backend
+## Installation
 
-### Installation
-
-Please check the official laravel installation guide for server requirements before you start. [Official Documentation](https://laravel.com/docs/5.4/installation#installation)
+Please check the official laravel installation guide for server requirements before you start. [Official Documentation](https://laravel.com/docs/10.x/installation)
 
 Alternative installation is possible without local dependencies relying on [Docker](#docker).
 
 Clone the repository
 
-    git clone git@github.com:kingofcamper/news-aggregator-api.git
+    git clone https://github.com/kingofcamper/news-aggregator-api.git
 
-Switch to the repo folder
+### Backend
 
-    cd news-aggregator-api
+Switch to the backend folder
+
+    cd news-aggregator/backend
 
 Install all the dependencies using composer
 
     composer install
-
-Copy the example env file and make the required configuration changes in the .env file
-
-    cp .env.example .env
 
 Generate a new application key
 
@@ -40,10 +36,9 @@ You can now access the server at http://localhost:8000
 
 **TL;DR command list**
 
-    git clone git@github.com:kingofcamper/news-aggregator-api.git
-    cd news-aggregator-api
+    git clone https://github.com/kingofcamper/news-aggregator.git
+    cd news-aggregator/backend
     composer install
-    cp .env.example .env
     php artisan key:generate
 
 **Make sure you set the correct database connection information before running the migrations** [Environment variables](#environment-variables)
@@ -51,26 +46,29 @@ You can now access the server at http://localhost:8000
     php artisan migrate
     php artisan serve
 
-### Docker
+**Generate Articles** (By default the third parties APIs keys are included in **.env**)
+
+    php artisan newsapi:daily-articles <category>
+    php artisan newyorktimes:daily-articles <category>
+    php artisan guardian:daily-articles <category>
+
+#### Docker
 
 To install with [Docker](https://www.docker.com), run following commands:
 
 ```
-git clone git@github.com:kingofcamper/news-aggregator-api.git
-cd news-aggregator-api
-cp .env.example.docker .env
-docker-compose exec app rm -rf vendor composer.lock
-docker run -v $(pwd):/app composer install
-cd ./docker
-docker-compose up -d
-docker-compose exec php php artisan key:generate
-docker-compose exec php php artisan migrate
-docker-compose exec php php artisan serve --host=0.0.0.0
+git clone https://github.com/kingofcamper/news-aggregator.git
+cd news-aggregator
+docker-compose up
+docker-compose exec -it <backend image> sh
+composer install
+php artisan key:generate
+php artisan migrate
 ```
 
 The api can be accessed at [http://localhost:8000/api](http://localhost:8000/api).
 
-### API Specification
+#### API Specification
 
 This application adheres to the api specifications set by the [Thinkster](https://github.com/gothinkster) team. This helps mix and match any backend with any other frontend without conflicts.
 
@@ -80,14 +78,15 @@ More information regarding the project can be found here https://github.com/goth
 
 ---
 
-# Code overview
+#### Code overview
 
-### Dependencies
+#### Dependencies
 
-- [jwt-auth](https://github.com/tymondesigns/jwt-auth) - For authentication using JSON Web Tokens
+- [laravel-sanctum](https://github.com/laravel/sanctum) - For authentication using JSON Web Tokens
 - [laravel-cors](https://github.com/barryvdh/laravel-cors) - For handling Cross-Origin Resource Sharing (CORS)
+- [laravel-saloon](https://github.com/saloonphp/saloon) - For handling third party APIs integration
 
-### Folders
+#### Folders
 
 - `app/Integrations/NewsApi` - Contains the files integrating News api content
 - `app/Integrations/NewYorkTimes` - Contains the files integrating New York Times content
@@ -96,7 +95,7 @@ More information regarding the project can be found here https://github.com/goth
 - `database/migrations` - Contains all the database migrations
 - `routes` - Contains all the api routes defined in api.php file
 
-### Environment variables
+#### Environment variables
 
 The `.env` file is where you can set the configuration and environment variables for the application. Here are some essential variables you might need to configure:
 
@@ -115,7 +114,7 @@ The `.env` file is where you can set the configuration and environment variables
 
 ---
 
-# Testing API
+#### Testing API
 
 Run the laravel development server
 
@@ -127,7 +126,7 @@ The api can now be accessed at
 
 ---
 
-# Cross-Origin Resource Sharing (CORS)
+#### Cross-Origin Resource Sharing (CORS)
 
 This applications has CORS enabled by default on all API endpoints. The default configuration allows requests from `http://localhost:3000` and `http://localhost:4200` to help speed up your frontend testing. The CORS allowed origins can be changed by setting them in the config file. Please check the following sources to learn more about CORS.
 
@@ -135,10 +134,44 @@ This applications has CORS enabled by default on all API endpoints. The default 
 - https://en.wikipedia.org/wiki/Cross-origin_resource_sharing
 - https://www.w3.org/TR/cors
 
-## Frontend
+### Frontend
 
-This repository contains the frontend code for Project Name. Below is a preview of our frontend design:
+Switch to the frontend folder
+
+    cd news-aggregator/frontend
+
+Install all the dependencies using composer
+
+    npm install
+
+Start the local development front
+
+    npm run dev
+
+You can now access the server at http://localhost:3000
+
+**TL;DR command list**
+
+    git clone https://github.com/kingofcamper/news-aggregator.git
+    cd news-aggregator/frontend
+    npm install
+    npm run dev
+
+#### Docker
+
+To install with [Docker](https://www.docker.com), run following commands:
+
+```
+git clone https://github.com/kingofcamper/news-aggregator.git
+cd news-aggregator
+docker-compose up
+docker-compose exec -it <frontend image> sh
+npm install
+npm run dev
+```
+
+Below is a preview of our frontend design from Dribbble:
 
 - ![Frontend Design](https://github.com/kingofcamper/news-aggregator/blob/refa/readme-dockerconf/frontend/screencapture-dribbble-shots-15076668-News-portal-attachments-6806040-2023-12-20-16_19_53.png)
 
-*[View the design on Dribbble](https://dribbble.com/shots/15076668-News-portal/attachments/6806040?mode=media)*
+- [View the design on Dribbble](https://dribbble.com/shots/15076668-News-portal/attachments/6806040?mode=media)\*
